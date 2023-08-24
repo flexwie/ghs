@@ -1,14 +1,19 @@
 package executors
 
-import "errors"
+import (
+	"context"
+	"errors"
+
+	"github.com/flexwie/ghs/pkg/github"
+)
 
 type NullExecutor struct {
 }
 
-func (n NullExecutor) Match(_ string) bool {
+func (n NullExecutor) Match(_ *github.File) bool {
 	return true
 }
 
-func (n NullExecutor) Execute(content string) error {
+func (n NullExecutor) Execute(_ context.Context) error {
 	return errors.New("null executor can't actually execute")
 }

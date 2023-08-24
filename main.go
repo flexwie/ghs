@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -22,7 +23,7 @@ func main() {
 				return cli.Exit("no gist provided", 2)
 			}
 
-			return pkg.ExecGist(gist)
+			return pkg.ExecGist(context.Background(), gist)
 		},
 	}
 

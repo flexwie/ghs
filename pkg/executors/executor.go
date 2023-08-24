@@ -1,8 +1,14 @@
 package executors
 
+import (
+	"context"
+
+	"github.com/flexwie/ghs/pkg/github"
+)
+
 type Executor interface {
-	Match(string) bool
-	Execute(string) error
+	Match(*github.File) bool
+	Execute(context.Context) error
 }
 
 var ExecutorPipeline = []Executor{

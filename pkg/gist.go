@@ -1,73 +1,52 @@
 package pkg
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
 
 	"github.com/flexwie/ghs/pkg/executors"
+	"github.com/flexwie/ghs/pkg/github"
 )
 
-type Gist struct {
-	Url    string
-	Id     string
-	Files  map[string]File
-	Public bool
-}
+func SearchForGist(ctx context.Context) (*github.Gist, *github.File, error) {
+	url := ctx.Value("apiUrl").(string)
+	gistName := ctx.Value("gist").(string)
 
-type File struct {
-	Filename string
-	Type     string
-	Language string
-	RawUrl   string `json:"raw_url"`
-}
-
-func SearchGist(gistEndpoint, filename string) (*File, error) {
-	resp, err := http.Get(gistEndpoint)
+	resp, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	var data []Gist
+	var data []github.Gist
 	json.Unmarshal(body, &data)
 
-	for _, gists := range data {
-		for _, file := range gists.Files {
-			if file.Filename == filename {
-				return &file, nil
+	for _, gist := range data {
+		for _, file := range gist.Files {
+			if file.Filename == gistName {
+				return &gist, &file, nil
 			}
 		}
 	}
 
-	return nil, errors.New("unable to find requested gist")
+	return nil, nil, errors.New("unable to find requested gist")
 }
 
-func FetchGistContent(file *File) (string, error) {
-	resp, err := http.Get(file.RawUrl)
-	if err != nil {
-		return "", err
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(body), nil
-}
-
-func ExecuteGist(content string) error {
+func GetExecutor(ctx context.Context) (executors.Executor, error) {
 	for _, e := range executors.ExecutorPipeline {
-		if e.Match(content) {
-			return e.Execute(content)
+		file := ctx.Value("file").(*github.File)
+
+		if e.Match(file) {
+			return e, nil
 		}
 	}
 
-	return errors.New("no executor found")
+	return nil, errors.New("no executor found")
 }

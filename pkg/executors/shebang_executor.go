@@ -1,9 +1,12 @@
 package executors
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/flexwie/ghs/pkg/github"
 )
 
 var _ Executor = ShebangExecutor{}
@@ -11,7 +14,12 @@ var _ Executor = ShebangExecutor{}
 type ShebangExecutor struct {
 }
 
-func (n ShebangExecutor) Match(content string) bool {
+func (n ShebangExecutor) Match(file *github.File) bool {
+	content, err := file.Content()
+	if err != nil {
+		panic(err)
+	}
+
 	lines := strings.Split(content, "\n")
 
 	if strings.HasPrefix(lines[0], "#!") {
@@ -21,7 +29,13 @@ func (n ShebangExecutor) Match(content string) bool {
 	return false
 }
 
-func (n ShebangExecutor) Execute(content string) error {
+func (n ShebangExecutor) Execute(ctx context.Context) error {
+	file := ctx.Value("file").(*github.File)
+	content, err := file.Content()
+	if err != nil {
+		return err
+	}
+
 	cmd := exec.Command("sh", "-c", content)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
