@@ -1,6 +1,6 @@
 
 builds:
-  - binary: mediumautopost
+  - binary: ghs
     goos:
       - darwin
       - linux
@@ -17,15 +17,58 @@ universal_binaries:
   - replace: true
 
 brews:
-  -
-    name: ghs
+  - name: ghs
     homepage: "https://github.com/flexwie/ghs"
-    tap:
+    repository:
       owner: flexwie
       name: homebrew-flexwie
     commit_author:
       name: flexwie
       email: ghs@felixwie.com
+    description: "a npx-like script execution for gists"
+    license: MIT
+    dependencies:
+      - gh
 
+nfpms:
+  - id: aptpackages
+    package_name: ghs
+    homepage: https://github.com/flexwie/ghs
+    maintainer: Felix Wieland <ghs@felixwie.com>
+    description: a npx-like script execution for gists
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    dependencies:
+      - gh
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+publishers:
+  - name: fury.io
+    ids:
+      - aptpackages
+    cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/flexwie/
+    dir: "{{ dir .ArtifactPath }}"
+
+dockers:
+  - image_templates:
+      - ghcr.io/flexwie/ghs:{{ .Tag }}
+      - ghcr.io/flexwie/ghs:latest
+
+nix:
+  - name: ghs
+    commit_author:
+      name: Felix Wieland
+      email: git@felixwie.com
+    homepage: https://github.com/flexwie/ghs
+    description: a npx-like script execution for gists
+    license: MIT
+    dependencies:
+      - gh
+    repository:
+      owner: flexwie
+      name: nur-packages
+      
 checksum:
   name_template: 'checksums.txt'
