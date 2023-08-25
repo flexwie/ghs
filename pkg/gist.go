@@ -1,12 +1,15 @@
 package pkg
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
+	"os/exec"
 
+	"github.com/charmbracelet/log"
 	"github.com/flexwie/ghs/pkg/executors"
 	"github.com/flexwie/ghs/pkg/github"
 )
@@ -15,7 +18,14 @@ func SearchForGist(ctx context.Context) (*github.Gist, *github.File, error) {
 	url := ctx.Value("apiUrl").(string)
 	gistName := ctx.Value("gist").(string)
 
-	resp, err := http.Get(url)
+	token := getGithubToken()
+
+	req, err := http.NewRequest("GET", url, nil)
+	if token != "" {
+		req.Header.Add("Authorization", token)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -37,6 +47,28 @@ func SearchForGist(ctx context.Context) (*github.Gist, *github.File, error) {
 	}
 
 	return nil, nil, errors.New("unable to find requested gist")
+}
+
+func getGithubToken() string {
+	cmd := exec.Command("which", "gh")
+	if err := cmd.Run(); err != nil {
+		log.Warn("GitHub cli is not installed. Your private gists will not be found.")
+		return ""
+	}
+
+	cmd = exec.Command("gh", "auth", "token")
+	writer := new(bytes.Buffer)
+	cmd.Stdout = writer
+
+	errOut := new(bytes.Buffer)
+	cmd.Stderr = errOut
+
+	if err := cmd.Run(); err != nil {
+		log.Warn("GitHub cli authentication failed. Your private gists will not be found.", "err", errOut.String())
+		return ""
+	}
+
+	return writer.String()
 }
 
 func GetExecutor(ctx context.Context) (executors.Executor, error) {
