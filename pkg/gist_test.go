@@ -1,11 +1,23 @@
-package pkg_test
+package pkg
 
-// func TestSearch(t *testing.T) {
-// 	file, err := pkg.SearchForGist("https://api.github.com/users/flexwie/gists", "test.sh")
+import (
+	"context"
+	"testing"
 
-// 	assert.Nil(t, err)
-// 	assert.NotNil(t, file)
+	"github.com/stretchr/testify/assert"
+)
 
-// 	_, err = pkg.SearchGist("https://api.github.com/users/unknown/gists", "test.sh")
-// 	assert.NotNil(t, err)
-// }
+func TestSearch(t *testing.T) {
+	ctx := context.TODO()
+	ctx = context.WithValue(ctx, "apiUrl", "https://api.github.com/users/flexwie/gists")
+	ctx = context.WithValue(ctx, "gist", "test.go")
+
+	gist, file, err := SearchForGist(ctx)
+
+	assert.Nil(t, err)
+	assert.NotNil(t, file)
+	assert.NotNil(t, gist)
+
+	// _, err = pkg.SearchGist("https://api.github.com/users/unknown/gists", "test.sh")
+	// assert.NotNil(t, err)
+}
