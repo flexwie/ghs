@@ -5,6 +5,8 @@ builds:
     goos:
       - darwin
       - linux
+      - freebsd
+      - windows
     goarch:
       - amd64
       - arm64
@@ -57,19 +59,20 @@ dockers:
       - ghcr.io/flexwie/ghs:{{ .Tag }}
       - ghcr.io/flexwie/ghs:latest
 
-nix:
-  - name: ghs
-    commit_author:
-      name: Felix Wieland
-      email: git@felixwie.com
-    homepage: https://github.com/flexwie/ghs
-    description: a npx-like script execution for gists
-    license: mit
-    dependencies:
-      - gh
-    repository:
-      owner: flexwie
-      name: nur-packages
+# TODO: reenable nur repo
+# nix:
+#   - name: ghs
+#     commit_author:
+#       name: Felix Wieland
+#       email: git@felixwie.com
+#     homepage: https://github.com/flexwie/ghs
+#     description: a npx-like script execution for gists
+#     license: mit
+#     dependencies:
+#       - gh
+#     repository:
+#       owner: flexwie
+#       name: nur-packages
 
 checksum:
   name_template: "checksums.txt"
