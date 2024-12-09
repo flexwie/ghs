@@ -5,11 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"os/exec"
+	"strings"
 
 	"github.com/charmbracelet/log"
+	"github.com/cli/go-gh/v2"
 	"github.com/flexwie/ghs/pkg/executors"
 	"github.com/flexwie/ghs/pkg/github"
 )
@@ -19,7 +22,7 @@ func SearchForGistFile(url string, gistName string, ctx context.Context) (*githu
 
 	req, err := http.NewRequest("GET", url, nil)
 	if token != "" {
-		req.Header.Add("Authorization", token)
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	}
 
 	resp, err := http.DefaultClient.Do(req)
@@ -47,6 +50,13 @@ func SearchForGistFile(url string, gistName string, ctx context.Context) (*githu
 }
 
 func getGithubToken() string {
+	x, _, err := gh.Exec("auth", "token")
+	if err != nil {
+		log.Warn("unauthorized")
+	}
+
+	return strings.TrimSuffix(x.String(), "\n")
+
 	cmd := exec.Command("which", "gh")
 	if err := cmd.Run(); err != nil {
 		log.Warn("GitHub cli is not installed. Your private gists will not be found.")
@@ -70,8 +80,6 @@ func getGithubToken() string {
 
 func GetExecutor(file *github.File, ctx context.Context) (executors.Executor, error) {
 	for _, e := range executors.ExecutorPipeline {
-		file := ctx.Value("file").(*github.File)
-
 		if e.Match(file) {
 			return e, nil
 		}

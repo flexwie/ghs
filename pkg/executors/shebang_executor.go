@@ -35,7 +35,25 @@ func (n ShebangExecutor) Execute(file *github.File, gist *github.Gist, ctx conte
 		return err
 	}
 
-	cmd := exec.Command("sh", "-c", content)
+	dfile, err := os.CreateTemp("", "ghs")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(dfile.Name())
+
+	// write content to file and make executable
+	_, err = dfile.Write([]byte(content))
+	if err != nil {
+		return err
+	}
+
+	err = dfile.Chmod(0777)
+	if err != nil {
+		return err
+	}
+
+	// run file as executable
+	cmd := exec.Command(dfile.Name())
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
