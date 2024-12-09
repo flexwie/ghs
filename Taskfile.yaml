@@ -1,0 +1,17 @@
+version: 3
+
+tasks:
+  test:
+    desc: Run go tests
+    cmd: go test ./... -cover
+
+  build:
+    desc: Build binary
+    cmds:
+      - task: test
+      - rm -rf dist
+      - go build -o dist/ghs main.go
+
+  run:
+    desc: Run application
+    cmd: go run main.go
