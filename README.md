@@ -1,5 +1,7 @@
 # ghs 📜
 
+[![release](https://github.com/flexwie/ghs/actions/workflows/release.yml/badge.svg)](https://github.com/flexwie/ghs/actions/workflows/release.yml)
+
 A npx-like script runner for GitHub gists
 
 Fetch scripts from GitHub Gists and execute them as if they were native scripts.
