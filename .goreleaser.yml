@@ -1,3 +1,4 @@
+version: 2
 
 builds:
   - binary: ghs
@@ -63,12 +64,12 @@ nix:
       email: git@felixwie.com
     homepage: https://github.com/flexwie/ghs
     description: a npx-like script execution for gists
-    license: MIT
+    license: mit
     dependencies:
       - gh
     repository:
       owner: flexwie
       name: nur-packages
-      
+
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
