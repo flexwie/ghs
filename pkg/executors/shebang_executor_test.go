@@ -24,8 +24,9 @@ func TestMatchShebang(t *testing.T) {
 
 func TestExecuteShebang(t *testing.T) {
 	exec := executors.ShebangExecutor{}
-	ctx := context.WithValue(context.TODO(), "file", &github.File{RawUrl: testUrl})
+	file := &github.File{RawUrl: testUrl}
+	gist := &github.Gist{}
 
-	err := exec.Execute(ctx)
+	err := exec.Execute(file, gist, context.TODO())
 	assert.Nil(t, err)
 }

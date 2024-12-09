@@ -26,19 +26,15 @@ func ExecGist(ctx context.Context, name string) error {
 
 	apiUrl := fmt.Sprintf("https://api.github.com/users/%s/gists", splitPath[0])
 
-	ctx = context.WithValue(ctx, "apiUrl", apiUrl)
-	ctx = context.WithValue(ctx, "username", splitPath[0])
-	ctx = context.WithValue(ctx, "gist", splitPath[1])
-
-	gist, file, err := SearchForGist(ctx)
+	file, gist, err := SearchForGistFile(apiUrl, splitPath[1], ctx)
 	if err != nil {
 		return err
 	}
 
-	ctx = context.WithValue(ctx, "gist", gist)
-	ctx = context.WithValue(ctx, "file", file)
+	exec, err := GetExecutor(file, ctx)
+	if err != nil {
+		return err
+	}
 
-	exec, err := GetExecutor(ctx)
-
-	return exec.Execute(ctx)
+	return exec.Execute(file, gist, ctx)
 }

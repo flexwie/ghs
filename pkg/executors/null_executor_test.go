@@ -18,6 +18,6 @@ func TestMatchNull(t *testing.T) {
 func TestExecuteNull(t *testing.T) {
 	exec := executors.NullExecutor{}
 
-	err := exec.Execute(context.TODO())
+	err := exec.Execute(&github.File{}, &github.Gist{}, context.TODO())
 	assert.NotNil(t, err)
 }

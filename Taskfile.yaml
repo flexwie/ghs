@@ -14,4 +14,4 @@ tasks:
 
   run:
     desc: Run application
-    cmd: go run main.go
+    cmd: go run main.go {{ .CLI_ARGS }}

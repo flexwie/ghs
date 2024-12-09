@@ -21,9 +21,9 @@ func TestMatch(t *testing.T) {
 
 func TestCanExecuteSingleFile(t *testing.T) {
 	exec := GolangExecutor{}
-	ctx := context.WithValue(context.TODO(), "file", &github.File{RawUrl: testUrl})
-	ctx = context.WithValue(ctx, "gist", &github.Gist{})
+	file := &github.File{RawUrl: testUrl}
+	gist := &github.Gist{}
 
-	err := exec.Execute(ctx)
+	err := exec.Execute(file, gist, context.TODO())
 	assert.Nil(t, err)
 }

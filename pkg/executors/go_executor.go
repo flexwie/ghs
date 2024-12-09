@@ -20,10 +20,7 @@ func (e GolangExecutor) Match(file *github.File) bool {
 	return false
 }
 
-func (e GolangExecutor) Execute(ctx context.Context) error {
-	gist := ctx.Value("gist").(*github.Gist)
-	file := ctx.Value("file").(*github.File)
-
+func (e GolangExecutor) Execute(file *github.File, gist *github.Gist, ctx context.Context) error {
 	// check if the gist includes a dependency file
 	var hasDependencies bool = false
 	for _, f := range gist.Files {

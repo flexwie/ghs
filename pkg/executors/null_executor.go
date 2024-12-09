@@ -14,6 +14,6 @@ func (n NullExecutor) Match(_ *github.File) bool {
 	return true
 }
 
-func (n NullExecutor) Execute(_ context.Context) error {
+func (n NullExecutor) Execute(_ *github.File, _ *github.Gist, _ context.Context) error {
 	return errors.New("null executor can't actually execute")
 }

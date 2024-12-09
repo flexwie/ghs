@@ -8,16 +8,16 @@ import (
 )
 
 func TestSearch(t *testing.T) {
-	ctx := context.TODO()
-	ctx = context.WithValue(ctx, "apiUrl", "https://api.github.com/users/flexwie/gists")
-	ctx = context.WithValue(ctx, "gist", "test.go")
+	url := "https://api.github.com/users/flexwie/gists"
+	gistName := "test.sh"
 
-	gist, file, err := SearchForGist(ctx)
+	file, gist, err := SearchForGistFile(url, gistName, context.TODO())
 
 	assert.Nil(t, err)
 	assert.NotNil(t, file)
 	assert.NotNil(t, gist)
 
-	// _, err = pkg.SearchGist("https://api.github.com/users/unknown/gists", "test.sh")
-	// assert.NotNil(t, err)
+	url = "https://api.github.com/users/unknown/gists"
+	_, _, err = SearchForGistFile(url, gistName, context.TODO())
+	assert.NotNil(t, err)
 }

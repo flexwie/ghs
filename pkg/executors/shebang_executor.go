@@ -29,8 +29,7 @@ func (n ShebangExecutor) Match(file *github.File) bool {
 	return false
 }
 
-func (n ShebangExecutor) Execute(ctx context.Context) error {
-	file := ctx.Value("file").(*github.File)
+func (n ShebangExecutor) Execute(file *github.File, gist *github.Gist, ctx context.Context) error {
 	content, err := file.Content()
 	if err != nil {
 		return err

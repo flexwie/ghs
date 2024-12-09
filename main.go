@@ -27,7 +27,7 @@ func main() {
 		Flags: []cli.Flag{&cli.BoolFlag{
 			Name:    "quiet",
 			Aliases: []string{"q"},
-			Value:   false,
+			Value:   true,
 			Usage:   "only print output of your command",
 		}},
 		Authors: []*cli.Author{

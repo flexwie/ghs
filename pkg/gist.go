@@ -14,10 +14,7 @@ import (
 	"github.com/flexwie/ghs/pkg/github"
 )
 
-func SearchForGist(ctx context.Context) (*github.Gist, *github.File, error) {
-	url := ctx.Value("apiUrl").(string)
-	gistName := ctx.Value("gist").(string)
-
+func SearchForGistFile(url string, gistName string, ctx context.Context) (*github.File, *github.Gist, error) {
 	token := getGithubToken()
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -41,7 +38,7 @@ func SearchForGist(ctx context.Context) (*github.Gist, *github.File, error) {
 	for _, gist := range data {
 		for _, file := range gist.Files {
 			if file.Filename == gistName {
-				return &gist, &file, nil
+				return &file, &gist, nil
 			}
 		}
 	}
@@ -71,7 +68,7 @@ func getGithubToken() string {
 	return writer.String()
 }
 
-func GetExecutor(ctx context.Context) (executors.Executor, error) {
+func GetExecutor(file *github.File, ctx context.Context) (executors.Executor, error) {
 	for _, e := range executors.ExecutorPipeline {
 		file := ctx.Value("file").(*github.File)
 

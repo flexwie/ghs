@@ -10,7 +10,7 @@ import (
 
 type Executor interface {
 	Match(*github.File) bool
-	Execute(context.Context) error
+	Execute(*github.File, *github.Gist, context.Context) error
 }
 
 var ExecutorPipeline = []Executor{
