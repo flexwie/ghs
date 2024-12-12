@@ -15,8 +15,10 @@ import (
 	"github.com/flexwie/ghs/pkg/github"
 )
 
-func SearchForGistFile(url string, gistName string, ctx context.Context) (*github.File, *github.Gist, error) {
+func SearchForGistFile(username string, gistName string, ctx context.Context) (*github.File, *github.Gist, error) {
 	token := getGithubToken()
+
+	url := fmt.Sprintf("https://api.github.com/users/%s/gists", username)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if token != "" {
@@ -45,6 +47,7 @@ func SearchForGistFile(url string, gistName string, ctx context.Context) (*githu
 	}
 
 	return nil, nil, errors.New(fmt.Sprintf("unable to find requested gist: %s", url))
+
 }
 
 func getGithubToken() string {

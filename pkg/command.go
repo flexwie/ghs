@@ -3,8 +3,6 @@ package pkg
 import (
 	"context"
 	"errors"
-	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/flexwie/ghs/pkg/github"
@@ -38,22 +36,15 @@ func ExecGist(ctx context.Context, name string, args []string) error {
 	return exec.Execute(file, gist, args)
 }
 
+// return the username and the gist name or id
 func ParseArgs(args string) (string, string, error) {
-	// check if its the gist id
-	re := regexp.MustCompile(`(?m)^[0-9a-z]{32}$`)
-
 	var splitPath = strings.Split(args, "/")
 	switch len(splitPath) {
 	case 1:
-		if re.Match([]byte(splitPath[0])) {
-			// found id of gist
-			return "", "", errors.ErrUnsupported
-		} else {
-			user := getGithubUsername()
-			return fmt.Sprintf("https://api.github.com/users/%s/gists", user), splitPath[0], nil
-		}
+		user := getGithubUsername()
+		return user, splitPath[0], nil
 	case 2:
-		return fmt.Sprintf("https://api.github.com/users/%s/gists", splitPath[0]), splitPath[1], nil
+		return splitPath[0], splitPath[1], nil
 	default:
 		return "", "", errors.New("malformed gist name")
 	}
