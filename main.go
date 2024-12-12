@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"errors"
 	"os"
 
 	"github.com/charmbracelet/log"
+	"github.com/cli/go-gh/v2"
 	"github.com/flexwie/ghs/pkg"
 	"github.com/urfave/cli/v2"
 )
@@ -30,6 +32,11 @@ func main() {
 			{Name: "Felix Wieland", Email: "ghs@felixwie.com"},
 		},
 		Action: func(ctx *cli.Context) error {
+			_, err := gh.Path()
+			if err != nil {
+				return errors.New("gh cli is not installed")
+			}
+
 			gist := ctx.Args().Get(0)
 			if len(gist) == 0 {
 				return cli.Exit("no gist provided", 2)
