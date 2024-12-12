@@ -23,13 +23,9 @@ func main() {
 	app := &cli.App{
 		Name:                   "ghs",
 		Usage:                  "npx-like script execution for GitHub gists",
+		SkipFlagParsing:        true,
 		UseShortOptionHandling: true,
-		Flags: []cli.Flag{&cli.BoolFlag{
-			Name:    "quiet",
-			Aliases: []string{"q"},
-			Value:   true,
-			Usage:   "only print output of your command",
-		}},
+		UsageText:              "ghs <gist name> [arguments/flags...]",
 		Authors: []*cli.Author{
 			{Name: "Felix Wieland", Email: "ghs@felixwie.com"},
 		},
@@ -43,7 +39,8 @@ func main() {
 				return cli.Exit("no gist provided", 2)
 			}
 
-			return pkg.ExecGist(context.Background(), gist)
+			args := ctx.Args().Slice()
+			return pkg.ExecGist(context.Background(), gist, args[1:])
 		},
 	}
 

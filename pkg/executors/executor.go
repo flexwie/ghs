@@ -1,7 +1,6 @@
 package executors
 
 import (
-	"context"
 	"os"
 	"os/exec"
 
@@ -10,7 +9,7 @@ import (
 
 type Executor interface {
 	Match(*github.File) bool
-	Execute(*github.File, *github.Gist, context.Context) error
+	Execute(*github.File, *github.Gist, []string) error
 }
 
 var ExecutorPipeline = []Executor{

@@ -1,7 +1,6 @@
 package executors_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/flexwie/ghs/pkg/executors"
@@ -27,6 +26,6 @@ func TestExecuteShebang(t *testing.T) {
 	file := &github.File{RawUrl: testUrl}
 	gist := &github.Gist{}
 
-	err := exec.Execute(file, gist, context.TODO())
+	err := exec.Execute(file, gist, []string{})
 	assert.Nil(t, err)
 }

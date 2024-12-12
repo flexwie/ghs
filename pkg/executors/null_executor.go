@@ -1,7 +1,6 @@
 package executors
 
 import (
-	"context"
 	"errors"
 
 	"github.com/flexwie/ghs/pkg/github"
@@ -14,6 +13,6 @@ func (n NullExecutor) Match(_ *github.File) bool {
 	return true
 }
 
-func (n NullExecutor) Execute(_ *github.File, _ *github.Gist, _ context.Context) error {
+func (n NullExecutor) Execute(_ *github.File, _ *github.Gist, _ []string) error {
 	return errors.New("null executor can't actually execute")
 }

@@ -18,7 +18,7 @@ type GistRequest struct {
 	ExecutionFile *github.File
 }
 
-func ExecGist(ctx context.Context, name string) error {
+func ExecGist(ctx context.Context, name string, args []string) error {
 	var splitPath = strings.Split(name, "/")
 	if len(splitPath) != 2 {
 		return errors.New("malformed gist name")
@@ -36,5 +36,5 @@ func ExecGist(ctx context.Context, name string) error {
 		return err
 	}
 
-	return exec.Execute(file, gist, ctx)
+	return exec.Execute(file, gist, args)
 }

@@ -1,7 +1,6 @@
 package executors
 
 import (
-	"context"
 	"errors"
 	"os"
 
@@ -20,7 +19,7 @@ func (e GolangExecutor) Match(file *github.File) bool {
 	return false
 }
 
-func (e GolangExecutor) Execute(file *github.File, gist *github.Gist, ctx context.Context) error {
+func (e GolangExecutor) Execute(file *github.File, gist *github.Gist, args []string) error {
 	// check if the gist includes a dependency file
 	var hasDependencies bool = false
 	for _, f := range gist.Files {

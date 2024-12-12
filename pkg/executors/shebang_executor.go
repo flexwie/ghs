@@ -1,7 +1,6 @@
 package executors
 
 import (
-	"context"
 	"os"
 	"os/exec"
 	"strings"
@@ -29,7 +28,7 @@ func (n ShebangExecutor) Match(file *github.File) bool {
 	return false
 }
 
-func (n ShebangExecutor) Execute(file *github.File, gist *github.Gist, ctx context.Context) error {
+func (n ShebangExecutor) Execute(file *github.File, gist *github.Gist, args []string) error {
 	content, err := file.Content()
 	if err != nil {
 		return err
@@ -53,7 +52,7 @@ func (n ShebangExecutor) Execute(file *github.File, gist *github.Gist, ctx conte
 	}
 
 	// run file as executable
-	cmd := exec.Command(dfile.Name())
+	cmd := exec.Command(dfile.Name(), args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin

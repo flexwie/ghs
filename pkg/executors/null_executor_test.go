@@ -1,7 +1,6 @@
 package executors_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/flexwie/ghs/pkg/executors"
@@ -18,6 +17,6 @@ func TestMatchNull(t *testing.T) {
 func TestExecuteNull(t *testing.T) {
 	exec := executors.NullExecutor{}
 
-	err := exec.Execute(&github.File{}, &github.Gist{}, context.TODO())
+	err := exec.Execute(&github.File{}, &github.Gist{}, []string{})
 	assert.NotNil(t, err)
 }
