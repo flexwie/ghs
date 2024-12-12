@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/flexwie/ghs/pkg/github"
@@ -19,14 +20,12 @@ type GistRequest struct {
 }
 
 func ExecGist(ctx context.Context, name string, args []string) error {
-	var splitPath = strings.Split(name, "/")
-	if len(splitPath) != 2 {
-		return errors.New("malformed gist name")
+	apiUrl, gistName, err := ParseArgs(name)
+	if err != nil {
+		return err
 	}
 
-	apiUrl := fmt.Sprintf("https://api.github.com/users/%s/gists", splitPath[0])
-
-	file, gist, err := SearchForGistFile(apiUrl, splitPath[1], ctx)
+	file, gist, err := SearchForGistFile(apiUrl, gistName, ctx)
 	if err != nil {
 		return err
 	}
@@ -37,4 +36,25 @@ func ExecGist(ctx context.Context, name string, args []string) error {
 	}
 
 	return exec.Execute(file, gist, args)
+}
+
+func ParseArgs(args string) (string, string, error) {
+	// check if its the gist id
+	re := regexp.MustCompile(`(?m)^[0-9a-z]{32}$`)
+
+	var splitPath = strings.Split(args, "/")
+	switch len(splitPath) {
+	case 1:
+		if re.Match([]byte(splitPath[0])) {
+			// found id of gist
+			return "", "", errors.ErrUnsupported
+		} else {
+			user := getGithubUsername()
+			return fmt.Sprintf("https://api.github.com/users/%s/gists", user), splitPath[0], nil
+		}
+	case 2:
+		return fmt.Sprintf("https://api.github.com/users/%s/gists", splitPath[0]), splitPath[1], nil
+	default:
+		return "", "", errors.New("malformed gist name")
+	}
 }

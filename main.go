@@ -30,10 +30,6 @@ func main() {
 			{Name: "Felix Wieland", Email: "ghs@felixwie.com"},
 		},
 		Action: func(ctx *cli.Context) error {
-			if ctx.Bool("quiet") {
-				log.SetLevel(log.ErrorLevel)
-			}
-
 			gist := ctx.Args().Get(0)
 			if len(gist) == 0 {
 				return cli.Exit("no gist provided", 2)

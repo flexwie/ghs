@@ -1,14 +1,12 @@
 package pkg
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"os/exec"
 	"strings"
 
 	"github.com/charmbracelet/log"
@@ -46,7 +44,7 @@ func SearchForGistFile(url string, gistName string, ctx context.Context) (*githu
 		}
 	}
 
-	return nil, nil, errors.New("unable to find requested gist")
+	return nil, nil, errors.New(fmt.Sprintf("unable to find requested gist: %s", url))
 }
 
 func getGithubToken() string {
@@ -56,26 +54,15 @@ func getGithubToken() string {
 	}
 
 	return strings.TrimSuffix(x.String(), "\n")
+}
 
-	cmd := exec.Command("which", "gh")
-	if err := cmd.Run(); err != nil {
-		log.Warn("GitHub cli is not installed. Your private gists will not be found.")
-		return ""
+func getGithubUsername() string {
+	x, _, err := gh.Exec("api", "user", "-q", ".login")
+	if err != nil {
+		// do smth
 	}
 
-	cmd = exec.Command("gh", "auth", "token")
-	writer := new(bytes.Buffer)
-	cmd.Stdout = writer
-
-	errOut := new(bytes.Buffer)
-	cmd.Stderr = errOut
-
-	if err := cmd.Run(); err != nil {
-		log.Warn("GitHub cli authentication failed. Your private gists will not be found.", "err", errOut.String())
-		return ""
-	}
-
-	return writer.String()
+	return strings.TrimSpace(x.String())
 }
 
 func GetExecutor(file *github.File, ctx context.Context) (executors.Executor, error) {
