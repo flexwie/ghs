@@ -76,3 +76,14 @@ dockers:
 
 checksum:
   name_template: "checksums.txt"
+
+binary_signs:
+  - {}
+
+signs:
+  - artifacts: checksum
+
+announce:
+  bluesky:
+    enabled: true
+    username: "me.felixwie.com"
