@@ -4,7 +4,7 @@
 
 A npx-like script runner for GitHub gists
 
-Fetch scripts from GitHub Gists and execute them as if they were native scripts.
+Fetch scripts from GitHub Gists and execute them as if they were native scripts. Uses the GitHub CLI for authentication under the hood.
 
 ## Installation
 
@@ -29,10 +29,10 @@ You can get a nix flake from https://github.com/flexwie/nur-packages
 ## Usage
 
 ```sh
-ghs <user>/<gist>
+ghs [<user>/]<gist>
 ```
 
-for example: `ghs flexwie/test.sh`
+for example: `ghs flexwie/test.sh`. If no username is provided, the currently logged in user will be assumed.
 
 ## Executors
 
