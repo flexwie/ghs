@@ -23,8 +23,8 @@ apt update
 apt install ghs
 ```
 
-**nix**  
-You can get a nix flake from https://github.com/flexwie/nur-packages
+**From source**  
+Clone the repository and run `task build`. Or get a binary from the assets of the [latest release](https://github.com/flexwie/ghs/releases/latest).
 
 ## Usage
 
