@@ -78,12 +78,33 @@ checksum:
   name_template: "checksums.txt"
 
 binary_signs:
-  - {}
+  - cmd: gpg2
+    args:
+      [
+        "-u",
+        "{{ .Env.GPG_KEYID }}",
+        "--output",
+        "${signature}",
+        "--detach-sign",
+        "${artifact}",
+      ]
 
 signs:
   - artifacts: checksum
+    cmd: gpg2
+    args:
+      [
+        "--batch",
+        "-u",
+        "{{ .Env.GPG_KEYID }}",
+        "--output",
+        "${signature}",
+        "--detach-sign",
+        "${artifact}",
+      ]
 
 announce:
   bluesky:
     enabled: true
     username: "me.felixwie.com"
+    message_template: "📜 {{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}"

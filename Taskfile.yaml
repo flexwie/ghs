@@ -15,3 +15,7 @@ tasks:
   run:
     desc: Run application
     cmd: go run main.go {{ .CLI_ARGS }}
+
+  release:
+    desc: Run GoReleaser
+    cmd: goreleaser release --snapshot --clean
