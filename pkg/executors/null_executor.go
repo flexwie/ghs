@@ -1,8 +1,7 @@
 package executors
 
 import (
-	"errors"
-
+	"github.com/charmbracelet/log"
 	"github.com/flexwie/ghs/pkg/github"
 )
 
@@ -14,5 +13,6 @@ func (n NullExecutor) Match(_ *github.File) bool {
 }
 
 func (n NullExecutor) Execute(_ *github.File, _ *github.Gist, _ []string) error {
-	return errors.New("null executor can't actually execute")
+	log.Warn("no executor found")
+	return nil
 }
