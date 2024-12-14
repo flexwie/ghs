@@ -34,11 +34,11 @@ func (n ShebangExecutor) Execute(file *github.File, gist *github.Gist, args []st
 		return err
 	}
 
-	dfile, err := os.CreateTemp("", "ghs")
+	dfile, err := MakeTmpFile()
+	defer os.Remove(dfile.Name())
 	if err != nil {
 		return err
 	}
-	defer os.Remove(dfile.Name())
 
 	// write content to file and make executable
 	_, err = dfile.Write([]byte(content))

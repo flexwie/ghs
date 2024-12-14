@@ -8,16 +8,16 @@ import (
 )
 
 func TestSearch(t *testing.T) {
-	url := "https://api.github.com/users/flexwie/gists"
+	username := "flexwie"
 	gistName := "test.sh"
 
-	file, gist, err := SearchForGistFile(url, gistName, context.TODO())
+	file, gist, err := SearchForGistFile(username, gistName, context.TODO())
 
 	assert.Nil(t, err)
 	assert.NotNil(t, file)
 	assert.NotNil(t, gist)
 
-	url = "https://api.github.com/users/unknown/gists"
-	_, _, err = SearchForGistFile(url, gistName, context.TODO())
+	username = "unknown"
+	_, _, err = SearchForGistFile(username, gistName, context.TODO())
 	assert.NotNil(t, err)
 }

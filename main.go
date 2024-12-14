@@ -15,7 +15,7 @@ func init() {
 	var logger *log.Logger = log.NewWithOptions(os.Stdout, log.Options{
 		ReportTimestamp: false,
 		ReportCaller:    false,
-		Level:           log.InfoLevel,
+		Level:           log.DebugLevel,
 	})
 
 	log.SetDefault(logger)
@@ -42,8 +42,10 @@ func main() {
 				return cli.Exit("no gist provided", 2)
 			}
 
-			args := ctx.Args().Slice()
-			return pkg.ExecGist(context.Background(), gist, args[1:])
+			args := ctx.Args().Slice()[1:]
+			log.Debug("parsing args", "gist", gist, "args", args)
+
+			return pkg.ExecGist(context.Background(), gist, args)
 		},
 	}
 
