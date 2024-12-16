@@ -1,0 +1,20 @@
+Output demo.gif
+
+Set FontSize 46
+Set Width 2800
+Set Height 1200
+
+Type "gh gist list --filter test.sh"
+Sleep 700ms
+Enter
+Sleep 2s
+
+Type "gh gist view b9a1e66ac9dfcd2ffe4ce1e0a5f8ab46 -f test.sh -r"
+Sleep 700ms
+Enter
+Sleep 2s
+
+Type "ghs test.sh 'Hello World'"
+Sleep 700ms
+Enter
+Sleep 7s
