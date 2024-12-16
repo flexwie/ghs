@@ -1,8 +1,15 @@
-Output demo.gif
+Output assets/demo.gif
+Require gh
+Require ghs
 
 Set FontSize 46
 Set Width 2800
-Set Height 1200
+Set Height 1000
+Set WindowBar Rings
+
+Set Margin 20
+Set MarginFill "#6B50FF"
+Set BorderRadius 10
 
 Type "gh gist list --filter test.sh"
 Sleep 700ms
