@@ -26,3 +26,9 @@ func BuildCommandExecutor(name string, args ...string) *exec.Cmd {
 
 	return cmd
 }
+
+type Exec interface {
+	Match() bool
+	InstallDependencies()
+	Run()
+}

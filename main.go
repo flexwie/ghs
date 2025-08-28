@@ -1,21 +1,39 @@
 package main
 
 import (
-	"context"
-	"errors"
 	"os"
+	"time"
 
+	"github.com/caarlos0/env/v11"
 	"github.com/charmbracelet/log"
-	"github.com/cli/go-gh/v2"
 	"github.com/flexwie/ghs/pkg"
 	"github.com/urfave/cli/v2"
 )
 
+type config struct {
+	LogLevel string `env:"LOG_LEVEL" envDefault:"warn"`
+}
+
+var start time.Time = time.Now()
+
 func init() {
+	c := config{}
+	err := env.ParseWithOptions(&c, env.Options{
+		Prefix: "GHS_",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	level, err := log.ParseLevel(c.LogLevel)
+	if err != nil {
+		panic(err)
+	}
+
 	var logger *log.Logger = log.NewWithOptions(os.Stdout, log.Options{
 		ReportTimestamp: false,
 		ReportCaller:    false,
-		Level:           log.DebugLevel,
+		Level:           level,
 	})
 
 	log.SetDefault(logger)
@@ -32,20 +50,8 @@ func main() {
 			{Name: "Felix Wieland", Email: "ghs@felixwie.com"},
 		},
 		Action: func(ctx *cli.Context) error {
-			_, err := gh.Path()
-			if err != nil {
-				return errors.New("gh cli is not installed")
-			}
-
-			gist := ctx.Args().Get(0)
-			if len(gist) == 0 {
-				return cli.Exit("no gist provided", 2)
-			}
-
-			args := ctx.Args().Slice()[1:]
-			log.Debug("parsing args", "gist", gist, "args", args)
-
-			return pkg.ExecGist(context.Background(), gist, args)
+			defer log.Debug("finished execution of script", "duration", time.Since(start))
+			return pkg.Run(ctx.Args().Slice())
 		},
 	}
 

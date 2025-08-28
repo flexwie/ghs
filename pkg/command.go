@@ -1,11 +1,13 @@
 package pkg
 
 import (
-	"context"
 	"errors"
 	"strings"
 
+	"github.com/charmbracelet/log"
+	"github.com/cli/go-gh/v2"
 	"github.com/flexwie/ghs/pkg/github"
+	"github.com/urfave/cli/v2"
 )
 
 type GistRequest struct {
@@ -17,18 +19,33 @@ type GistRequest struct {
 	ExecutionFile *github.File
 }
 
-func ExecGist(ctx context.Context, name string, args []string) error {
-	apiUrl, gistName, err := ParseArgs(name)
+func Run(args []string) error {
+	_, err := gh.Path()
+	if err != nil {
+		return errors.New("gh cli is not installed")
+	}
+
+	gistname := args[0]
+	if len(gistname) == 0 {
+		return cli.Exit("no gist provided", 2)
+	}
+
+	ghclient := github.NewGithubClient()
+
+	args = args[1:]
+
+	username, gistname, err := ParseArgs(gistname)
+	if err != nil {
+		return err
+	}
+	log.Debug("parsing args", "user", username, "gist", gistname, "args", args)
+
+	file, gist, err := github.SearchForGistFile(username, gistname)
 	if err != nil {
 		return err
 	}
 
-	file, gist, err := SearchForGistFile(apiUrl, gistName, ctx)
-	if err != nil {
-		return err
-	}
-
-	exec, err := GetExecutor(file, ctx)
+	exec, err := GetExecutor(file)
 	if err != nil {
 		return err
 	}
@@ -41,7 +58,7 @@ func ParseArgs(args string) (string, string, error) {
 	var splitPath = strings.Split(args, "/")
 	switch len(splitPath) {
 	case 1:
-		user := getGithubUsername()
+		user := github.GetUsername()
 		return user, splitPath[0], nil
 	case 2:
 		return splitPath[0], splitPath[1], nil

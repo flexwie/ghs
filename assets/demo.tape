@@ -7,7 +7,7 @@ Set Width 2800
 Set Height 1000
 Set WindowBar Rings
 
-Set Margin 20
+Set Margin 25
 Set MarginFill "#6B50FF"
 Set BorderRadius 10
 

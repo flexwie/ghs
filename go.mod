@@ -12,9 +12,18 @@ require (
 )
 
 require (
+	github.com/cli/shurcooL-graphql v0.0.4 // indirect
+	github.com/henvic/httpretty v0.0.6 // indirect
+	github.com/thlib/go-timezone-local v0.0.0-20210907160436-ef149e42d28e // indirect
+	golang.org/x/term v0.13.0 // indirect
+)
+
+require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
+	github.com/caarlos0/env/v11 v11.3.0 // indirect
 	github.com/charmbracelet/lipgloss v0.10.1-0.20240413172830-d0be07ea6b9c // indirect
 	github.com/charmbracelet/x/exp/term v0.0.0-20240425164147-ba2a9512b05f // indirect
+	github.com/cli/go-gh v1.2.1
 	github.com/cli/safeexec v1.0.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
