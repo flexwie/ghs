@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/cli/go-gh/v2"
 	"github.com/flexwie/ghs/pkg"
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -22,34 +22,67 @@ func init() {
 }
 
 func main() {
-	app := &cli.App{
-		Name:                   "ghs",
-		Usage:                  "npx-like script execution for GitHub gists",
-		SkipFlagParsing:        true,
-		UseShortOptionHandling: true,
-		UsageText:              "ghs <gist name> [arguments/flags...]",
-		Authors: []*cli.Author{
-			{Name: "Felix Wieland", Email: "ghs@felixwie.com"},
+	root := &cobra.Command{
+		Use:                   "ghs [gist] [args]",
+		Short:                 "npx-like script execution for GitHub gists",
+		DisableFlagParsing:    true,
+		SilenceUsage:          true,
+		SilenceErrors:         true,
+		Args:                  cobra.ArbitraryArgs,
+		DisableFlagsInUseLine: true,
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			log.Debug(toComplete)
+
+			outputs := []string{"hello", "moto"}
+			return outputs, cobra.ShellCompDirectiveNoFileComp
 		},
-		Action: func(ctx *cli.Context) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			_, err := gh.Path()
 			if err != nil {
 				return errors.New("gh cli is not installed")
 			}
 
-			gist := ctx.Args().Get(0)
-			if len(gist) == 0 {
-				return cli.Exit("no gist provided", 2)
+			if len(args) == 0 {
+				return errors.New("gist is required")
 			}
 
-			args := ctx.Args().Slice()[1:]
-			log.Debug("parsing args", "gist", gist, "args", args)
+			gist := args[0]
+			if len(gist) == 0 {
+				return errors.New("gist is required")
+			}
 
-			return pkg.ExecGist(context.Background(), gist, args)
+			gistArgs := args[1:]
+			log.Debug("parsing args", "gist", gist, "args", gistArgs)
+
+			return pkg.ExecGist(context.Background(), gist, gistArgs)
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	completion := &cobra.Command{
+		Use:                   "completion [shell]",
+		Short:                 "Generate autocompletion script",
+		ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
+		Args:                  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+		DisableFlagsInUseLine: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			switch args[0] {
+			case "bash":
+				_ = cmd.Root().GenBashCompletion(cmd.OutOrStdout())
+			case "zsh":
+				_ = cmd.Root().GenZshCompletion(cmd.OutOrStdout())
+			case "fish":
+				_ = cmd.Root().GenFishCompletion(cmd.OutOrStdout(), true)
+			case "powershell":
+				_ = cmd.Root().GenPowerShellCompletion(cmd.OutOrStdout())
+			}
+
+			return nil
+		},
+	}
+
+	root.AddCommand(completion)
+
+	if err := root.Execute(); err != nil {
 		log.Fatal(err)
 	}
 }
