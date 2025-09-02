@@ -21,7 +21,7 @@ Sleep 700ms
 Enter
 Sleep 2s
 
-Type "ghs test.sh 'Hello World'"
+Type "ghs test.sh 'Hello World!'"
 Sleep 700ms
 Enter
 Sleep 7s
